@@ -2,14 +2,16 @@ package model
 
 import (
 	"fmt"
+	"os"
 
 	"../sdk"
 )
 
 type PhaseTask struct {
 	*Task
-	TopOfRealAdvance   float64
-	ValueOfRealAdvance int
+	TopOfRealAdvance          float64
+	MinimunValueOfRealAdvance int
+	ValueOfRealAdvance        int
 }
 
 func (a PhaseTask) TaskWeight() int {
@@ -49,13 +51,26 @@ func (e PhaseTask) MinorValueScaled() float64 {
 }
 
 func (a PhaseTask) GetFirstSwapCombination(b PhaseTask, goal int) (n, m int) {
-	var aTop, bTop = a.TopValueOfRealAdvance(), b.TopValueOfRealAdvance()
-	n, m = sdk.DivisorWithLimit(a.MinorValue(), b.MinorValue(), goal, &aTop, &bTop)
+	if a.MinorValue() > b.MinorValue() {
+		return b.GetFirstSwapCombination(a, goal)
+	}
+
+	res2 := goal % b.MinorValue()
+	for i := 1; i < b.MinorValue(); i++ {
+		var newM = ((i*a.MinorValue()-res2)/b.MinorValue() - goal/b.MinorValue())
+		if i*a.MinorValue()%b.MinorValue() == res2 {
+			if (a.ValueOfRealAdvance-i*a.MinorValue()) < a.MinimunValueOfRealAdvance || (newM*b.MinorValue()+b.ValueOfRealAdvance) > b.TopValueOfRealAdvance() {
+				continue
+			}
+			n = i
+			m = newM
+		}
+	}
 	return
 }
 
-func (e PhaseTask) Print() {
-	fmt.Printf("Name: %s - TotalPrjt: %8.2f - TopPerc: %8.2f - PercInPrj: %8.2f - PercAdv: %8.2f - ValAdv: %8.2f - MinorStep: %8.2f - Weight: %d\n",
+func (e PhaseTask) Print(file *os.File) {
+	fmt.Fprintf(file, "Name: %s - TotalPrjt: %8.2f - TopPerc: %8.2f - PercInPrj: %8.2f - PercAdv: %8.2f - ValAdv: %8.2f - MinorStep: %8.2f - Weight: %d\n",
 		e.Name,
 		e.ValueOfTheWholeTaskScaled(),
 		e.TopOfRealAdvance,
@@ -103,7 +118,7 @@ func (a PhaseTasks) OrderByMinorValueDesc() {
 	a.Reverse()
 }
 
-func (a PhaseTasks) SumValuOfAdvance() int {
+func (a PhaseTasks) SumValueOfAdvance() int {
 	var total = 0
 	for index := 0; index < len(a); index++ {
 		total += a[index].ValueOfRealAdvance
@@ -111,8 +126,8 @@ func (a PhaseTasks) SumValuOfAdvance() int {
 	return total
 }
 
-func (a PhaseTasks) Print() {
+func (a PhaseTasks) Print(file *os.File) {
 	for index := 0; index < len(a); index++ {
-		a[index].Print()
+		a[index].Print(file)
 	}
 }

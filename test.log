@@ -1,0 +1,68 @@
+Start process...
+Phase 01/2016 => Best result with weights: 119996878
+Phase => Adjust in precision...
+Phase 01/2016 => Best result with minor value: 119999928
+Phase => Adjust subtract and in precision...
+5650 *  0 - 3778 *  0 =  0
+5650 *  0 - 2400 *  0 =  0
+5650 *  0 - 2300 *  0 =  0
+5650 *  0 - 2250 *  0 =  0
+5650 *  0 - 2150 *  0 =  0
+5650 *  0 - 1800 *  0 =  0
+5650 *  0 - 1450 *  0 =  0
+5650 *  0 - 750 *  0 =  0
+3778 *  0 - 2400 *  0 =  0
+3778 *  0 - 2300 *  0 =  0
+3778 *  0 - 2250 *  0 =  0
+3778 *  0 - 2150 *  0 =  0
+3778 *  0 - 1800 *  0 =  0
+3778 *  0 - 1450 *  0 =  0
+3778 *  0 - 750 *  0 =  0
+2400 *  0 - 2300 *  0 =  0
+2400 *  0 - 2250 *  0 =  0
+2400 *  0 - 2150 *  0 =  0
+2400 *  0 - 1800 *  0 =  0
+2400 *  0 - 1450 *  0 =  0
+2400 *  0 - 750 *  0 =  0
+2300 *  0 - 2250 *  0 =  0
+2300 *  0 - 2150 *  0 =  0
+2300 *  0 - 1800 *  0 =  0
+2300 *  0 - 1450 *  0 =  0
+2300 *  0 - 750 *  0 =  0
+2250 *  0 - 2150 *  0 =  0
+2250 *  0 - 1800 *  0 =  0
+2250 *  0 - 1450 *  0 =  0
+2250 *  0 - 750 *  0 =  0
+2150 *  0 - 1800 *  0 =  0
+2150 *  0 - 1450 *  0 =  0
+2150 *  0 - 750 *  0 =  0
+1800 *  0 - 1450 *  0 =  0
+1800 *  0 - 750 *  0 =  0
+1450 *  0 - 750 *  0 =  0
+Phase 01/2016 => Best result with fit: 119999928
+
+
+Project.BaseModel => Perc: 100 - Precision: 4 - Base: 10 - Scale: 10000
+Project => Name: CSA - TotalAmount: 22528.86
+
+Phase => Month: 1 - Year: 2016 - Goal: 12000.00 - Reached: 11999.99
+Name: B13 - TotalPrjt:  5650.00 - TopPerc:   100.00 - PercInPrj:    25.08 - PercAdv:    94.60 - ValAdv:  5344.90 - MinorStep:     0.56 - Weight: 10
+Name: B14 - TotalPrjt:   750.00 - TopPerc:    95.00 - PercInPrj:     3.33 - PercAdv:    85.15 - ValAdv:   638.62 - MinorStep:     0.07 - Weight: 9
+Name: B15 - TotalPrjt:  2300.00 - TopPerc:    95.00 - PercInPrj:    10.21 - PercAdv:    85.15 - ValAdv:  1958.45 - MinorStep:     0.23 - Weight: 9
+Name: B16 - TotalPrjt:  2250.00 - TopPerc:    95.00 - PercInPrj:     9.99 - PercAdv:    85.05 - ValAdv:  1913.62 - MinorStep:     0.23 - Weight: 9
+Name: B17 - TotalPrjt:  3778.00 - TopPerc:    60.00 - PercInPrj:    16.77 - PercAdv:    56.76 - ValAdv:  2144.39 - MinorStep:     0.38 - Weight: 6
+Name: B18 - TotalPrjt:  1800.86 - TopPerc:     0.00 - PercInPrj:     7.99 - PercAdv:     0.00 - ValAdv:     0.00 - MinorStep:     0.18 - Weight: 0
+Name: B19 - TotalPrjt:  1450.00 - TopPerc:     0.00 - PercInPrj:     6.44 - PercAdv:     0.00 - ValAdv:     0.00 - MinorStep:     0.14 - Weight: 0
+Name: B20 - TotalPrjt:  2400.00 - TopPerc:     0.00 - PercInPrj:    10.65 - PercAdv:     0.00 - ValAdv:     0.00 - MinorStep:     0.24 - Weight: 0
+Name: B21 - TotalPrjt:  2150.00 - TopPerc:     0.00 - PercInPrj:     9.54 - PercAdv:     0.00 - ValAdv:     0.00 - MinorStep:     0.21 - Weight: 0
+
+Phase => Month: 2 - Year: 2016 - Goal: 10528.86 - Reached: 22528.86
+Name: B13 - TotalPrjt:  5650.00 - TopPerc:   100.00 - PercInPrj:    25.08 - PercAdv:   100.00 - ValAdv:  5650.00 - MinorStep:     0.56 - Weight: 10
+Name: B14 - TotalPrjt:   750.00 - TopPerc:   100.00 - PercInPrj:     3.33 - PercAdv:   100.00 - ValAdv:   750.00 - MinorStep:     0.07 - Weight: 10
+Name: B15 - TotalPrjt:  2300.00 - TopPerc:   100.00 - PercInPrj:    10.21 - PercAdv:   100.00 - ValAdv:  2300.00 - MinorStep:     0.23 - Weight: 10
+Name: B16 - TotalPrjt:  2250.00 - TopPerc:   100.00 - PercInPrj:     9.99 - PercAdv:   100.00 - ValAdv:  2250.00 - MinorStep:     0.23 - Weight: 10
+Name: B17 - TotalPrjt:  3778.00 - TopPerc:   100.00 - PercInPrj:    16.77 - PercAdv:   100.00 - ValAdv:  3778.00 - MinorStep:     0.38 - Weight: 10
+Name: B18 - TotalPrjt:  1800.86 - TopPerc:   100.00 - PercInPrj:     7.99 - PercAdv:   100.00 - ValAdv:  1800.86 - MinorStep:     0.18 - Weight: 10
+Name: B19 - TotalPrjt:  1450.00 - TopPerc:   100.00 - PercInPrj:     6.44 - PercAdv:   100.00 - ValAdv:  1450.00 - MinorStep:     0.14 - Weight: 10
+Name: B20 - TotalPrjt:  2400.00 - TopPerc:   100.00 - PercInPrj:    10.65 - PercAdv:   100.00 - ValAdv:  2400.00 - MinorStep:     0.24 - Weight: 10
+Name: B21 - TotalPrjt:  2150.00 - TopPerc:   100.00 - PercInPrj:     9.54 - PercAdv:   100.00 - ValAdv:  2150.00 - MinorStep:     0.21 - Weight: 10

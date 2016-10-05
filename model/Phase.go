@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"os"
 
 	"../sdk"
 )
@@ -19,9 +20,9 @@ func (a Phase) GoalInt() int {
 	return sdk.FloatTimesInt(a.Goal, a.Scale())
 }
 
-func (a Phase) Print() {
-	fmt.Printf("Phase => Month: %d - Year: %d - Goal: %8.2f\n", a.Month, a.Year, a.Goal)
-	a.Tasks.Print()
+func (a Phase) Print(file *os.File) {
+	fmt.Fprintf(file, "Phase => Month: %d - Year: %d - Goal: %8.2f - Reached: %8.2f\n", a.Month, a.Year, a.Goal, a.IntDivisionByScale(a.Tasks.SumValueOfAdvance()))
+	a.Tasks.Print(file)
 }
 
 type Phases []Phase
@@ -34,13 +35,13 @@ func (a Phases) SumFirstNGoals(n int) float64 {
 	return total
 }
 
-func (a Phases) Print(qtyPhases *int) {
+func (a Phases) Print(qtyPhases *int, file *os.File) {
 	var size = len(a)
 	if qtyPhases != nil {
 		size = *qtyPhases
 	}
 	for index := 0; index < size; index++ {
-		fmt.Println()
-		a[index].Print()
+		fmt.Fprintln(file)
+		a[index].Print(file)
 	}
 }

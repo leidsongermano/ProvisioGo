@@ -2,98 +2,108 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
+	"os"
 
 	"./model"
 )
 
 func main() {
-
-	//var testPhase = 1
+	f, err := os.Create("test.log")
+	if err != nil {
+		log.Fatal("Cannot create file", err)
+	}
+	defer f.Close()
+	//var testPhase = 3
 	var proj = MockProject()
-	ProcessProject(proj, false)
-	proj.Print(nil)
+	ProcessProject(proj, f, false)
+	proj.Print(nil, f)
 }
 
-func ProcessProject(prj model.Project, debug bool) {
+func ProcessProject(prj model.Project, file *os.File, debug bool) {
 	for phaseIndex := 0; phaseIndex < len(prj.Phases); phaseIndex++ {
 		switch phaseIndex {
 		case len(prj.Phases) - 1:
-			FillPhaseWithLastPhase(prj.Phases[phaseIndex-1], &prj.Phases[phaseIndex], debug)
-			CompleteLastPhase(&prj.Phases[phaseIndex], debug)
+			FillPhaseWithLastPhase(prj.Phases[phaseIndex-1], &prj.Phases[phaseIndex], file)
+			CompleteLastPhase(&prj.Phases[phaseIndex], file)
 			break
 		case 0:
-			ProcessPhase(&prj.Phases[phaseIndex], debug)
+			ProcessPhase(&prj.Phases[phaseIndex], file, debug)
 			break
 		default:
-			FillPhaseWithLastPhase(prj.Phases[phaseIndex-1], &prj.Phases[phaseIndex], debug)
-			ProcessPhase(&prj.Phases[phaseIndex], debug)
+			FillPhaseWithLastPhase(prj.Phases[phaseIndex-1], &prj.Phases[phaseIndex], file)
+			ProcessPhase(&prj.Phases[phaseIndex], file, debug)
 		}
 	}
 }
 
-func FillPhaseWithLastPhase(lastPhase model.Phase, currentPhase *model.Phase, debug bool) {
+func FillPhaseWithLastPhase(lastPhase model.Phase, currentPhase *model.Phase, file *os.File) {
 	for taskIndex := 0; taskIndex < len(lastPhase.Tasks); taskIndex++ {
 		currentPhase.Tasks[taskIndex].ValueOfRealAdvance = lastPhase.Tasks[taskIndex].ValueOfRealAdvance
+		currentPhase.Tasks[taskIndex].MinimunValueOfRealAdvance = lastPhase.Tasks[taskIndex].ValueOfRealAdvance
 	}
 }
 
-func CompleteLastPhase(phase *model.Phase, debug bool) {
+func CompleteLastPhase(phase *model.Phase, file *os.File) {
 	for taskIndex := 0; taskIndex < len(phase.Tasks); taskIndex++ {
 		phase.Tasks[taskIndex].ValueOfRealAdvance = phase.Tasks[taskIndex].ValueOfTheWholeTask()
 	}
 }
 
-func ProcessPhase(phase *model.Phase, debug bool) {
+func ProcessPhase(phase *model.Phase, file *os.File, debug bool) {
+	fmt.Fprintln(file, "Start process...")
 	phase.Tasks.OrderByMinorValueDesc()
-	addValuesBasedOnWeights(phase, debug)
-	fmt.Printf("Phase %02d/%d => Best result with weights: %d\n", phase.Month, phase.Year, phase.Tasks.SumValuOfAdvance())
-	fmt.Println("Phase => Adjust in precision...")
-	addValuesBasedOnMinorValues(phase, debug)
-	fmt.Printf("Phase %02d/%d => Best result with minor value: %d\n", phase.Month, phase.Year, phase.Tasks.SumValuOfAdvance())
-	fmt.Println("Phase => Adjust subtract and in precision...")
-	tryToFit(phase, debug)
-	fmt.Printf("Phase %02d/%d => Best result with fit: %d\n\n", phase.Month, phase.Year, phase.Tasks.SumValuOfAdvance())
+	addValuesBasedOnWeights(phase, file, debug)
+	fmt.Fprintf(file, "Phase %02d/%d => Best result with weights: %d\n", phase.Month, phase.Year, phase.Tasks.SumValueOfAdvance())
+	fmt.Fprintln(file, "Phase => Adjust in precision...")
+	addValuesBasedOnMinorValues(phase, file, debug)
+	fmt.Fprintf(file, "Phase %02d/%d => Best result with minor value: %d\n", phase.Month, phase.Year, phase.Tasks.SumValueOfAdvance())
+	fmt.Fprintln(file, "Phase => Adjust subtract and in precision...")
+	tryToFit(phase, file, true)
+	fmt.Fprintf(file, "Phase %02d/%d => Best result with fit: %d\n\n", phase.Month, phase.Year, phase.Tasks.SumValueOfAdvance())
+	phase.Tasks.SortByName()
 }
 
-func addValuesBasedOnWeights(phase *model.Phase, debug bool) {
+func addValuesBasedOnWeights(phase *model.Phase, file *os.File, debug bool) {
 	var control = 0
-	for phase.Tasks.SumValuOfAdvance() < phase.AccGoal && control < (len(phase.Tasks)-1) {
+	for phase.Tasks.SumValueOfAdvance() < phase.AccGoal && control < (len(phase.Tasks)-1) {
 		for index := 0; index < len(phase.Tasks); index++ {
 			var e = &phase.Tasks[index]
 			var add = e.TaskWeight() * e.MinorValue()
 			var newPerc = e.IntDivisionInPerc((e.ValueOfRealAdvance + add), e.ValueOfTheWholeTask())
-			if phase.Tasks.SumValuOfAdvance()+add < phase.AccGoal && e.TaskWeight() > 0 && newPerc < e.TopOfRealAdvanceInt() {
+			if phase.Tasks.SumValueOfAdvance()+add <= phase.AccGoal && e.TaskWeight() > 0 && newPerc <= e.TopOfRealAdvanceInt() {
 				e.ValueOfRealAdvance += add
 				if debug {
-					fmt.Printf("Task: %s Total added: %12d Total: %12d NewPerc: %12d Top: %12d\n", e.Name, add, phase.Tasks.SumValuOfAdvance(), newPerc, e.TopOfRealAdvanceInt())
+					fmt.Fprintf(file, "Task: %s Total added: %12d Total: %12d NewPerc: %12d Top: %12d\n", e.Name, add, phase.Tasks.SumValueOfAdvance(), newPerc, e.TopOfRealAdvanceInt())
 				}
 				control = 0
 			} else {
 				control++
 				if debug {
-					fmt.Printf("Control: %d\n", control)
+					fmt.Fprintf(file, "Control: %d\n", control)
 				}
 			}
 		}
 	}
 	if debug {
-		fmt.Printf("Total obtained in addValuesBasedOnWeights: %12.2f\n", phase.IntDivisionByScale(phase.Tasks.SumValuOfAdvance()))
+		fmt.Fprintf(file, "Total obtained in addValuesBasedOnWeights: %12.2f\n", phase.IntDivisionByScale(phase.Tasks.SumValueOfAdvance()))
 	}
 }
 
-func addValuesBasedOnMinorValues(phase *model.Phase, debug bool) {
+func addValuesBasedOnMinorValues(phase *model.Phase, file *os.File, debug bool) {
 	var control = 0
-	for phase.Tasks.SumValuOfAdvance() < phase.AccGoal && control < (len(phase.Tasks)-1) {
+	for phase.Tasks.SumValueOfAdvance() < phase.AccGoal && control < (len(phase.Tasks)-1) {
 		for index := 0; index < len(phase.Tasks); index++ {
 			var e = &phase.Tasks[index]
-			if phase.Tasks.SumValuOfAdvance()+e.MinorValue() < phase.AccGoal {
+			var newPerc = e.IntDivisionInPerc((e.ValueOfRealAdvance + e.MinorValue()), e.ValueOfTheWholeTask())
+			if phase.Tasks.SumValueOfAdvance()+e.MinorValue() <= phase.AccGoal && newPerc <= e.TopOfRealAdvanceInt() {
 				for weightIndex := 0; weightIndex < e.TaskWeight(); weightIndex++ {
-					var newPerc = e.IntDivisionInPerc((e.ValueOfRealAdvance + e.MinorValue()), e.ValueOfTheWholeTask())
-					if phase.Tasks.SumValuOfAdvance()+e.MinorValue() < phase.AccGoal && newPerc < e.TopOfRealAdvanceInt() {
+					newPerc = e.IntDivisionInPerc((e.ValueOfRealAdvance + e.MinorValue()), e.ValueOfTheWholeTask())
+					if phase.Tasks.SumValueOfAdvance()+e.MinorValue() <= phase.AccGoal && newPerc <= e.TopOfRealAdvanceInt() {
 						e.ValueOfRealAdvance += e.MinorValue()
 						if debug {
-							fmt.Printf("Task: %s Total added: %12d Total: %12d NewPerc: %12d Top: %12d\n", e.Name, e.MinorValue(), phase.Tasks.SumValuOfAdvance(), newPerc, e.TopOfRealAdvanceInt())
+							fmt.Fprintf(file, "Task: %s Total added: %12d Total: %12d NewPerc: %12d Top: %12d\n", e.Name, e.MinorValue(), phase.Tasks.SumValueOfAdvance(), newPerc, e.TopOfRealAdvanceInt())
 						}
 						control = 0
 					}
@@ -101,18 +111,18 @@ func addValuesBasedOnMinorValues(phase *model.Phase, debug bool) {
 			} else {
 				control++
 				if debug {
-					fmt.Printf("Control: %d\n", control)
+					fmt.Fprintf(file, "Control: %d\n", control)
 				}
 			}
 		}
 	}
 	if debug {
-		fmt.Printf("Total obtained in addValuesBasedOnMinorValues: %.4f\n", phase.Tasks.SumValuOfAdvance())
+		fmt.Fprintf(file, "Total obtained in addValuesBasedOnMinorValues: %.4f\n", phase.Tasks.SumValueOfAdvance())
 	}
 }
 
-func tryToFit(phase *model.Phase, debug bool) {
-	var newGoal = phase.AccGoal - phase.Tasks.SumValuOfAdvance()
+func tryToFit(phase *model.Phase, file *os.File, debug bool) {
+	var newGoal = phase.AccGoal - phase.Tasks.SumValueOfAdvance()
 	for index := 0; index < len(phase.Tasks); index++ {
 		var e = &phase.Tasks[index]
 		for index2 := index + 1; index2 < len(phase.Tasks); index2++ {
@@ -120,7 +130,7 @@ func tryToFit(phase *model.Phase, debug bool) {
 
 			n, m := e.GetFirstSwapCombination(*e2, newGoal)
 			if debug {
-				fmt.Printf("%2d * %2d - %2d * %2d = %2d\n", e.MinorValue(), n, e2.MinorValue(), m, e.MinorValue()*n-e2.MinorValue()*m)
+				fmt.Fprintf(file, "%2d * %2d - %2d * %2d = %2d\n", e.MinorValue(), n, e2.MinorValue(), m, e.MinorValue()*n-e2.MinorValue()*m)
 			}
 
 			if int(math.Abs(float64(e.MinorValue()*n-e2.MinorValue()*m))) == newGoal {

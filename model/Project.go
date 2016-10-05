@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"../sdk"
@@ -71,9 +72,9 @@ func (prj *Project) FillFinalPhaseTasks() {
 	}
 }
 
-func (prj Project) Print(qtyPhases *int) {
-	fmt.Println()
-	fmt.Printf("Project.BaseModel => Perc: %d - Precision: %d - Base: %d - Scale: %d\n", prj.Perc, prj.Precision, prj.Base, prj.Scale())
-	fmt.Printf("Project => Name: %s - TotalAmount: %8.2f\n", prj.Name, prj.TotalAmount)
-	prj.Phases.Print(qtyPhases)
+func (prj Project) Print(qtyPhases *int, file *os.File) {
+	fmt.Fprintln(file)
+	fmt.Fprintf(file, "Project.BaseModel => Perc: %d - Precision: %d - Base: %d - Scale: %d\n", prj.Perc, prj.Precision, prj.Base, prj.Scale())
+	fmt.Fprintf(file, "Project => Name: %s - TotalAmount: %8.2f\n", prj.Name, prj.TotalAmount)
+	prj.Phases.Print(qtyPhases, file)
 }
