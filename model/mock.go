@@ -1,6 +1,4 @@
-package main
-
-import "./model"
+package model
 
 // func MockProject() (prj model.Project) {
 
@@ -25,17 +23,17 @@ import "./model"
 // 	return
 // }
 
-func MockProject() (prj model.Project) {
+func MockProject() (prj Project) {
 
 	var taskValueList = []float64{5650, 750, 2300, 2250, 3778, 1800.86, 1450, 2400, 2150}
 	var goalPhases = []float64{12000}
 	var topLists = [][]float64{
 		[]float64{100, 95, 95, 95, 60, 0, 0, 0, 0}}
 
-	prj = model.Project{
+	prj = Project{
 		Name:        "CSA",
 		TotalAmount: 22528.86,
-		BaseModel: &model.BaseModel{
+		BaseModel: &BaseModel{
 			Perc:      100,
 			Precision: 4,
 			Base:      10}}

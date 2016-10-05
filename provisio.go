@@ -16,7 +16,7 @@ func main() {
 	}
 	defer f.Close()
 	//var testPhase = 3
-	var proj = MockProject()
+	var proj = model.MockProject()
 	ProcessProject(proj, f, false)
 	proj.Print(nil, f)
 }
