@@ -6,7 +6,7 @@ import (
 	"math"
 	"os"
 
-	"./model"
+	"github.com/leidsongermano/Provisiogo/model"
 )
 
 func main() {
