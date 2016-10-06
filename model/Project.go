@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"../sdk"
+	"github.com/leidsongermano/Provisiogo/sdk"
 )
 
 type Project struct {

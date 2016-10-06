@@ -1,7 +1,7 @@
 package model
 
 import (
-	"../sdk"
+	"github.com/leidsongermano/Provisiogo/sdk"
 )
 
 type Task struct {

@@ -3,7 +3,7 @@ package model
 import (
 	"math"
 
-	"../sdk"
+	"github.com/leidsongermano/Provisiogo/sdk"
 )
 
 //BaseModel class to store and organize the configurations

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"../sdk"
+	"github.com/leidsongermano/Provisiogo/sdk"
 )
 
 type PhaseTask struct {

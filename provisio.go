@@ -2,23 +2,28 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math"
+	"math/big"
 	"os"
 
 	"github.com/leidsongermano/Provisiogo/model"
 )
 
 func main() {
-	f, err := os.Create("test.log")
-	if err != nil {
-		log.Fatal("Cannot create file", err)
-	}
-	defer f.Close()
-	//var testPhase = 3
-	var proj = model.MockProject()
-	ProcessProject(proj, f, false)
-	proj.Print(nil, f)
+	// f, err := os.Create("test.log")
+	// if err != nil {
+	// 	log.Fatal("Cannot create file", err)
+	// }
+	// defer f.Close()
+	// //var testPhase = 3
+	// var proj = model.MockProject()
+	// ProcessProject(proj, f, false)
+	// proj.Print(nil, f)
+	var a = big.NewInt(252)
+	var b = big.NewInt(105)
+	var z, x, y = big.NewInt(147), new(big.Int), new(big.Int)
+	z.GCD(x, y, a, b)
+	fmt.Printf("z = %d -- x = %d -- y = %d", z.Int64(), x.Int64(), y.Int64())
 }
 
 func ProcessProject(prj model.Project, file *os.File, debug bool) {
